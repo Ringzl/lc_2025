@@ -82,21 +82,19 @@ Think:
 1. 字数组的最长递增子序列长度可以可以用dp解决，用 i,j 表示递增相邻位置
 2. if nums[i] > nums[j] -> dp[i] = max(dp[i], dp[j]+1)
 
-
 Solution:
 ```py
 class Solution:
-    def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
-        dct = {}
-        for s in strs:
-            sorted_s = ''.join(sorted(s))
-            dct.setdefault(sorted_s, []).append(s)
+    def lengthOfLIS(self, nums: List[int]) -> int:
         
-        ans = []
-        for key in dct:
-            ans.append(dct[key])
-
-        return ans        
+        n = len(nums)
+        ans = 0
+        dp = [1 for _ in range(n)]
+        for i in range(n):
+            for j in range(0,i):
+                if nums[i] > nums[j]:
+                    dp[i] = max(dp[i], dp[j] + 1)
+        return max(dp)      
 ```
 
 
