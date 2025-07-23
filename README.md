@@ -77,12 +77,12 @@ class Solution:
 ### 4. 最长递增子序列
 Problem: 给你一个整数数组 nums ，找到其中最长严格递增子序列的长度。子序列 是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。例如，[3,6,2,7] 是数组 [0,3,1,6,2,2,7] 的子序列。
 
-Think:
+Think1:
 
 1. 字数组的最长递增子序列长度可以可以用dp解决，用 i,j 表示递增相邻位置
 2. if nums[j] > nums[i] -> dp[j] = max(dp[j], dp[i] + 1)  
 
-Solution:
+Solution1:
 ```py
 class Solution:
     def lengthOfLIS(self, nums: List[int]) -> int:
@@ -94,6 +94,51 @@ class Solution:
                 if nums[j] > nums[i]:
                     dp[j] = max(dp[j], dp[i] + 1)  
         return max(dp) 
+```
+
+Think2:
+1. 要使递增子序列尽可能长，需要让序列上升得尽可能慢（每次加上的数尽可能小）
+2. 将原数组当作key,状态数组作为value,问题变成了在集合中寻找key小于目标值的最大value
+3. 维护一个数组d保存最长递增子序列末尾元素最小值（可证明d单调递增）
+4. 在d中利用二分法找到第一个比 nums[i] 小的数 d[k] ，并更新 d[k+1]=nums[i]
+
+
+，d[i]表示长为i的，
+3. 
+
+Solution2:
+```py
+class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        
+        n = len(nums)
+        if n == 0:
+            return 0
+
+        def binarysearch_le(d, l, r, target):
+            pos = 0
+            while l <= r:
+                mid = (l + r) // 2
+                if d[mid] < target:
+                    pos = mid
+                    l = mid + 1
+                else:
+                    r = mid - 1
+            return pos
+
+        k = 1
+        d = [0 for _ in range(n+1)]
+        d[k] = nums[0] 
+
+        for i in range(1,n):
+            if nums[i] > d[k]:
+                d[k+1] = nums[i]
+                k+=1
+            else:
+                pos = binarysearch_le(d, 1, k, nums[i])
+                d[pos+1] = nums[i]
+        
+        return k
 ```
 
 
