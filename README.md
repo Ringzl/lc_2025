@@ -138,4 +138,90 @@ class Solution:
         return k
 ```
 
+date： 20250723
+### 5. 无重复字符的最长子串
 
+Problem: 给定一个字符串 s ，请你找出其中不含有重复字符的 最长 子串 的长度。
+
+Think:
+1. 遍历元素，同时用字典保存之前遍历过的元素及其位置，若之前遍历过，则将遍历过的位置之前的元素清掉
+2. ans = max(ans, len(char_dct))
+
+Solution:
+```py
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        
+        # 保存位置
+        char_dct = {}
+        n = len(s)
+        ans = 0
+        for i in range(n):
+
+            # 存在重复，找到重复位置，并从字典中去除该位置前的字符
+            if s[i] in char_dct:
+                pos = char_dct[s[i]]
+                for c in list(char_dct.keys()):
+                    if c in char_dct and char_dct[c] <= pos:
+                        char_dct.pop(c)
+            
+            char_dct[s[i]] = i
+
+            ans = max(ans, len(char_dct))
+        return ans
+```
+
+Think2:
+1. 使用元组保存当前字串元素，使用left、right记录子串左右侧位置，通过right遍历
+2. s[right] not in char_set -> 添加、right +=1 cnt+=1
+3. 否则 char_set.remove(s[left]) -> 删除（删到相同值位置为止）、left += 1 cnt -= 1
+
+
+Solution2:
+```py
+
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        left = 0
+        right = 0
+        n = len(s)
+
+        char_set = set()
+        ans = 0
+        cnt = 0
+        while right < n:
+            if s[right] not in char_set:
+                char_set.add(s[right])
+                right += 1
+                cnt += 1
+            else:
+                char_set.remove(s[left])
+                left += 1
+                cnt -= 1
+            ans = max(ans, cnt)
+
+        return ans
+```
+
+
+### 6. 合并区间
+
+Problem: 以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi] 。请你合并所有重叠的区间，并返回 一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间 。
+
+Think:
+
+Solution:
+```py
+
+```
+
+### 7. 盛最多水的容器
+
+Problem:给定一个长度为 n 的整数数组 height 。有 n 条垂线，第 i 条线的两个端点是 (i, 0) 和 (i, height[i]) 。找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。返回容器可以储存的最大水量。
+
+Think:
+
+Solution:
+```py
+
+```
