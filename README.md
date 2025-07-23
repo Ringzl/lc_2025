@@ -103,9 +103,6 @@ Think2:
 4. 在d中利用二分法找到第一个比 nums[i] 小的数 d[k] ，并更新 d[k+1]=nums[i]
 
 
-，d[i]表示长为i的，
-3. 
-
 Solution2:
 ```py
 class Solution:
