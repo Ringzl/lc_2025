@@ -230,11 +230,62 @@ class Solution:
         return ans
 ```
 
+date: 20250724
 ### 7. 盛最多水的容器
 
 Problem:给定一个长度为 n 的整数数组 height 。有 n 条垂线，第 i 条线的两个端点是 (i, 0) 和 (i, height[i]) 。找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。返回容器可以储存的最大水量。
 
 Think:
+1. 从首尾两侧左边i,右边j开始，确定移动左侧还是右侧？ 宽度在减小，高度尽可能高 -> 保持高的边不动
+2. 容量计算 (j-i) * min(height[i], height[j])
+
+Solution:
+```py
+class Solution:
+    def maxArea(self, height: List[int]) -> int:
+        n = len(height)
+
+        i, j = 0, n-1
+        ans = 0
+        while i < j:
+            ans = max(ans, (j-i) * min(height[i], height[j]))
+            if height[i] > height[j]:
+                j -= 1
+            else:
+                i += 1
+        return ans   
+```
+
+### 8. 搜索插入位置
+
+Problem:给定一个排序数组和一个目标值，在数组中找到目标值，并返回其索引。如果目标值不存在于数组中，返回它将会被按顺序插入的位置。
+
+Think:
+1. 二分法查找元素位置，找到位置和插入位置-> 找 nums[mid] >= target 等于或大于的位置
+
+Solution:
+```py
+class Solution:
+    def searchInsert(self, nums: List[int], target: int) -> int:
+        left, right = 0, len(nums)-1
+        
+        pos = len(nums)
+        while left <= right:
+            mid = (left + right) // 2
+            if nums[mid] >= target:
+                pos = mid
+                right = mid - 1
+            else:
+                left = mid + 1
+
+        return pos
+```
+
+### 9. 
+Problem:
+
+Think:
+
 
 Solution:
 ```py
