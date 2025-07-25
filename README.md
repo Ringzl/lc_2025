@@ -281,13 +281,66 @@ class Solution:
         return pos
 ```
 
-### 9. 
-Problem:
+DATE:20250725
+### 9. 每日温度
+Problem: 给定一个整数数组 temperatures ，表示每天的温度，返回一个数组 answer ，其中 answer[i] 是指对于第 i 天，下一个更高温度出现在几天后。如果气温在这之后都不会升高，请在该位置用 0 来代替。
 
 Think:
+1. 暴力遍历所有情况（超时）
+2. 维护一个存储下标的单调栈，栈顶到栈底温度递减；遍历当前温度大于栈顶，则栈顶出栈
 
 
-Solution:
+Solution1:
+```py
+class Solution:
+    def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
+        
+        n = len(temperatures)
+
+        ans = [0 for _ in range(n)]
+        for i in range(n-1):
+            for j in range(i+1, n):
+                if temperatures[j] > temperatures[i]:
+                    ans[i] = j-i
+                    break
+        return ans
+```
+
+Solution2:
+```py
+class Solution:
+    def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
+        n = len(temperatures)
+        ans = [0 for _ in range(n)]
+        st = []
+        for i in range(n):
+            while st and temperatures[i] > temperatures[st[-1]]:
+                ans[st[-1]] = i - st[-1]
+                st.pop()
+            st.append(i)
+        return ans 
+```
+
+### 反转链表
+
+Problem: 给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。
+
+Think: 
+1. 保存前后两个节点prev、cur： cur.next = prev; cur->next->next = cur;
+
+Solution1:
 ```py
 
+class Solution:
+    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        
+        prev = None
+        cur = head
+        while cur != None:
+            tmp = cur.next
+            cur.next = prev
+            prev = cur
+            cur = tmp
+        
+        return prev
 ```
