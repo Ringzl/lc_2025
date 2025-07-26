@@ -352,6 +352,7 @@ Problem: 给定一个大小为 n 的数组 nums ，返回其中的多数元素�
 
 Think: 
 1. 使用字典记录元素出现次数，并更新最大次数和对应元素值
+2. Boyer-Moore 投票算法，选择一个数为候选众数，遍历后续的数，如果与它相等，count加一，否则减一;count等于0,更换候选。
 
 Solution:
 
@@ -369,3 +370,56 @@ class Solution:
                 ans = nums[i]
         return ans 
 ```
+
+### 12. 最长连续序列
+
+Problem: 给定一个未排序的整数数组 nums ，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度。
+
+Think: 
+1. 先排序，然后遍历对比前后元素，差值为1计数加1，相同不变，其他则置1
+2. 先用元组去重，遍历num,若num-1不在元组中，则向后找num+1...,同时计数更新最长
+
+Solution:
+
+```py
+class Solution:
+    def longestConsecutive(self, nums: List[int]) -> int:
+
+        nums.sort()
+        n = len(nums)
+        if n <= 1:
+            return n
+        ans = 1
+        cnt = 1
+        for i in range(1, n):
+            if nums[i] - nums[i-1] == 1:
+                cnt += 1
+            elif nums[i] == nums[i-1]:
+                continue
+            else:
+                cnt = 1
+            ans = max(ans, cnt)
+            
+        return ans
+```
+
+Sloution2：
+```py
+class Solution:
+    def longestConsecutive(self, nums: List[int]) -> int:
+
+        nums_set = set(nums)
+        ans = 0
+        for num in nums_set:
+            if num-1 not in nums_set:
+                cur_num = num
+                cnt = 1
+
+                while cur_num + 1 in nums_set:
+                    cur_num += 1
+                    cnt += 1
+                ans = max(ans, cnt)
+        
+        return ans    
+```
+
