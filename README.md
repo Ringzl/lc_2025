@@ -423,3 +423,76 @@ class Solution:
         return ans    
 ```
 
+### 13.回文链表
+
+Problem: 给你一个单链表的头节点 head ，请你判断该链表是否为回文链表。如果是，返回 true ；否则，返回 false 。
+
+Think: 
+1. 遍历链表，先进栈，再遍历出栈，对比相同返回True
+
+
+Sloution：
+```py   
+class Solution:
+    def isPalindrome(self, head: Optional[ListNode]) -> bool:
+
+        st = []
+        cur = head
+        while cur != None:
+            st.append(cur.val)
+            cur = cur.next
+        
+        cur = head
+        while cur != None:
+            if cur.val != st[-1]:
+                return False
+            st.pop()
+            cur = cur.next
+
+        return True
+```
+
+### 14. 和为 K 的子数组
+
+Problem: 给你一个整数数组 nums 和一个整数 k ，请你统计并返回 该数组中和为 k 的子数组的个数 
+
+Think: 
+1. 暴力： i,j 字串和为k（超时）
+2. 利用前缀和， presum - k 在前缀和中多少次，既有 presum-(presum-k) = k, 注意初始 presum_dct = {0:1}
+
+Sloution：
+```py   
+class Solution:
+    def subarraySum(self, nums: List[int], k: int) -> int:
+
+        n = len(nums)
+        ans = 0
+        for i in range(n):
+            for j in range(i, n):
+                if sum(nums[i:j+1]) == k:
+                    ans += 1
+
+        return ans
+```
+
+Sloution2：
+```py   
+class Solution:
+    def subarraySum(self, nums: List[int], k: int) -> int:
+
+        # 前缀和
+        n = len(nums)
+        presum_dct = {0:1}
+
+        presum = 0
+        ans = 0
+        for i in range(n):
+            presum += nums[i]
+
+            if presum - k in presum_dct:
+                ans += presum_dct[presum- k]
+            presum_dct[presum] = presum_dct.get(presum, 0) + 1
+        
+        return ans 
+
+```
