@@ -496,3 +496,76 @@ class Solution:
         return ans 
 
 ```
+
+### 15. 爬楼梯
+
+Problem:假设你正在爬楼梯。需要 n 阶你才能到达楼顶。每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+
+Think: 动态规划： dp[i] = dp[i-1] + dp[i-2]
+
+Solution:
+```py   
+class Solution:
+    def climbStairs(self, n: int) -> int:
+
+        dp = [0 for _ in range(n+1)]
+        dp[0] = 1
+        dp[1] = 1
+
+        for i in range(2, n+1):
+            dp[i] = dp[i-1] + dp[i-2]
+
+        return dp[n]
+```
+
+
+### 16. 环形链表 II
+
+Problem: 给定一个链表的头节点  head ，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+
+Think: 使用快慢指针，若能相遇则有环;相遇后从初始位置和相遇位置分别开始遍历，相遇则为入环点
+
+Solution:
+```py  
+class Solution:
+    def detectCycle(self, head: Optional[ListNode]) -> Optional[ListNode]:
+
+        slow = head
+        fast = head
+        while fast != None:
+            slow = slow.next
+
+            if fast.next == None:
+                return None
+            fast = fast.next.next
+
+            if slow == fast:
+                cur = head
+                while cur != slow:
+                    cur = cur.next
+                    slow = slow.next
+                return cur
+        return None
+```
+
+### 17. 最大子数组和
+
+Problem: 给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
+
+Think: 动态规划： 子数组和 presum = max(presum + num, num)
+
+Solution:
+```py   
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        # pre = max(pre + nums[i], nums[i])
+
+        presum = 0
+        ans = nums[0]
+        for num in nums:
+            presum = max(presum + num, num)
+            ans = max(presum, ans)
+        return ans
+```
+
+
