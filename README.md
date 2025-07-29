@@ -569,4 +569,40 @@ class Solution:
         return ans
 ```
 
+date: 20250729
+
+### 18. 二叉树的最大深度
+
+Problem: 给定一个二叉树 root ，返回其最大深度。二叉树的 最大深度 是指从根节点到最远叶子节点的最长路径上的节点数。
+
+Think:递归求解，二叉树最大深度=MAX(左子树最大深度，右子树最大深度) + 1
+
+Solution:
+```py   
+class Solution:
+    def maxDepth(self, root: Optional[TreeNode]) -> int:
+
+        if root == None:
+            return 0
+
+        else:
+            left = self.maxDepth(root.left)
+            right = self.maxDepth(root.right)
+            return max(left, right) + 1
+```
+
+### 19. 数组中的第K个最大元素
+
+Problem: 给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。你必须设计并实现时间复杂度为 O(n) 的算法解决此问题。
+
+Think: 先排序，再取第k大
+
+Solution:
+```py   
+class Solution:
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        nums.sort(reverse=True)
+        return nums[k-1]
+
+```
 
