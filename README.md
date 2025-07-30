@@ -605,4 +605,102 @@ class Solution:
         return nums[k-1]
 
 ```
+date:20250730
 
+### 20. 二叉树的中序遍历
+
+Problem: 给定一个二叉树的根节点 root ，返回 它的 中序 遍历 。
+
+Think: 先遍历左子树，先访问节点，再右子树
+
+
+Solution:
+```py   
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        ans = []
+        def inorder(root):
+            if root == None:
+                return 
+
+            inorder(root.left)
+            ans.append(root.val)
+            inorder(root.right)
+        
+        inorder(root)
+        return ans
+```
+
+Solution2:
+```py   
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        ans = []
+        st = []
+        while len(st) > 0 or root:
+
+            # 左子树
+            while root:
+                st.append(root)
+                root = root.left
+            
+            root = st.pop()
+            ans.append(root.val)
+            root = root.right
+        return ans
+```
+
+### 21. 三数之和
+
+Problem: 给你一个整数数组 nums ，判断是否存在三元组 [nums[i], nums[j], nums[k]] 满足 i != j、i != k 且 j != k ，同时还满足 nums[i] + nums[j] + nums[k] == 0 。请你返回所有和为 0 且不重复的三元组。
+
+think: 暴力三层循环； 先排序，再外层for + 双指针（注意去重）
+
+Solution:
+
+```py
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        
+        nums.sort()
+        n = len(nums)
+
+        ans = []
+        for i in range(n):
+            # 去重复
+            if i > 0 and nums[i] == nums[i-1]:
+                continue
+
+            # 双指针
+            l = i + 1
+            r = n - 1
+            while l < r:
+                s = nums[i] + nums[l] + nums[r]
+                if s == 0:
+                    ans.append([nums[i], nums[l], nums[r]]) 
+                    while l < r and nums[l] == nums[l+1]:
+                        l+=1
+                    while l < r and nums[r] == nums[r-1]:
+                        r-=1
+                    l+=1
+                    r-=1
+                elif s < 0 :
+                    l += 1
+                elif s > 0:
+                    r -= 1
+
+        return ans 
+
+```
