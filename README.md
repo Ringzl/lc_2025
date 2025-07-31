@@ -704,3 +704,34 @@ class Solution:
         return ans 
 
 ```
+
+### 22. 二叉树的直径
+
+Problem: 给你一棵二叉树的根节点，返回该树的 直径 。二叉树的 直径 是指树中任意两个节点之间最长路径的 长度 。这条路径可能经过也可能不经过根节点 root 。
+
+think: 求直径（即求路径长度的最大值）等效于求路径经过节点数的最大值减一。当前树的最大直径 = 左子树最大深度 + 右子树最大深度 + 1
+
+Solution:
+
+```py
+class Solution:
+    def diameterOfBinaryTree(self, root: Optional[TreeNode]) -> int:
+        
+        self.ans = 0
+
+        def depth(root):
+            if root == None:
+                return 0
+        
+            left = depth(root.left)
+            right = depth(root.right)
+
+            self.ans = max(self.ans, left + right + 1)
+
+            return max(left, right) + 1
+        
+        depth(root)
+
+        return self.ans - 1
+
+```
