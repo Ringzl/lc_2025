@@ -735,3 +735,39 @@ class Solution:
         return self.ans - 1
 
 ```
+
+### 23. 有效的括号
+
+Problem: 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效。
+
+think: 使用栈保存左边括号，碰到右边出栈，否则入栈，最后栈空则满足
+
+Solution:
+
+```py
+class Solution:
+    def isValid(self, s: str) -> bool:
+
+        st = []
+
+        dct = {
+            '(' : ')',
+            '[' : ']',
+            '{' : '}'
+        }
+
+        for char in s:
+            if char in dct:
+                st.append(char)  
+            else:
+                if len(st) > 0:
+                    if char == dct[st[-1]]:
+                        st.pop()
+                    else:
+                        return False
+                else:
+                    return False
+
+        return False if len(st) > 0 else True
+```
+
