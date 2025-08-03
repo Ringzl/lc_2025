@@ -771,3 +771,64 @@ class Solution:
         return False if len(st) > 0 else True
 ```
 
+date:20250803
+
+### 24.  翻转二叉树
+
+Problem: 给你一棵二叉树的根节点 root ，翻转这棵二叉树，并返回其根节点。
+
+think: 左右子树（翻转后的）互换 ，最后返回root
+
+Solution:
+
+```py
+class Solution:
+    def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+
+        if root == None:
+            return 
+        
+        left = self.invertTree(root.left)
+        right = self.invertTree(root.right)
+
+        root.left = right
+        root.right = left
+
+        return root
+```
+
+### 25. 二叉树的层序遍历
+
+Problem: 给你二叉树的根节点 root ，返回其节点值的 层序遍历 。 （即逐层地，从左到右访问所有节点）。
+
+think: 依次遍历，使用队列保存, python 中使用双端队列来保存 
+
+左边操作： popleft, appendleft
+右边操作： pop, append
+
+Solution:
+
+```py
+class Solution:
+    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+
+        if root is None:
+            return []
+
+        q = deque([root])
+        ans = []
+        while q:
+            ret = []
+            for _ in range(len(q)):
+                root = q.popleft()
+                ret.append(root.val)
+                
+                if root.left:
+                    q.append(root.left)
+                
+                if root.right:
+                    q.append(root.right)
+            ans.append(ret)
+        return ans
+```
+
