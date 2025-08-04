@@ -832,3 +832,102 @@ class Solution:
         return ans
 ```
 
+### 26. 对称二叉树
+
+Problem: 给你一个二叉树的根节点 root ， 检查它是否轴对称。
+
+think: 
+1. 根节点左右孩子相同，左孩子的左孩子 == 右孩子的右孩子 左孩子的右孩子 = 右孩子的左孩子
+2. 使用两个指针遍历，p指针、q指针分别遍历对应位置
+
+Solution:
+
+```py
+class Solution:
+    def isSymmetric(self, root: Optional[TreeNode]) -> bool:
+
+        def check(p, q):
+            if p == None and q == None:
+                return True
+            if p== None or q == None:
+                return False
+            
+            check_lr = check(p.left, q.right)
+            check_rl = check(p.right, q.left)
+            
+            if p.val == q.val and check_lr and check_rl:
+                return True
+            else:
+                return False
+
+        return check(root.left, root.right)
+```
+
+### 27. 验证二叉搜索树
+
+Problem: 给你一个二叉树的根节点 root ，判断其是否是一个有效的二叉搜索树。
+
+think: 中序遍历是有序数组
+
+Solution:
+
+```py
+class Solution:
+    def isValidBST(self, root: Optional[TreeNode]) -> bool:
+        
+        lst = []
+        def inorder(root):
+            if root ==None:
+                return 
+
+            inorder(root.left)
+            lst.append(root.val)
+            inorder(root.right)
+
+        inorder(root)
+        for i in range(len(lst)-1):
+            if lst[i] >= lst[i+1]:
+                return False
+
+        return True
+
+```
+
+
+### 28. 全排列
+
+Problem: 给定一个不含重复数字的数组 nums ，返回其 所有可能的全排列 。你可以 按任意顺序 返回答案。
+
+think: 
+* 终止条件： 长度为nums大小
+* 遍历时标记是否访问过
+
+Solution:
+
+```py
+class Solution:
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        res = []
+        path = []
+
+        used = [False for _ in range(len(nums))]
+
+        def backtrack(nums, used):
+
+            if len(path) == len(nums):
+                res.append(path.copy())
+                return
+
+            for i in range(len(nums)):
+                if used[i] == True:
+                    continue
+                used[i] = True
+                path.append(nums[i])
+                backtrack(nums, used)
+                path.pop()
+                used[i] = False
+            
+        backtrack(nums, used)
+        return res
+```
+
