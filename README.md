@@ -931,3 +931,105 @@ class Solution:
         return res
 ```
 
+### 29. 环形链表
+
+Problem: 给你一个链表的头节点 head ，判断链表中是否有环。
+
+think: 使用快慢指针，若能相遇，则有环
+
+Solution:
+
+```py
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+
+        slow = head
+        fast = head
+
+        while fast != None:
+            slow = slow.next
+
+            if fast.next == None:
+                return False
+
+            fast = fast.next.next
+
+            if slow == fast:
+                return True
+```
+
+### 30. 子集
+
+Problem: 给你一个整数数组 nums ，数组中的元素 互不相同 。返回该数组所有可能的子集（幂集）。
+
+think: 使用idnex作为参数，防止重复取值 for i in range(index, n): backtrack(i+1)
+
+Solution:
+
+```py
+
+class Solution:
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+
+        n = len(nums)
+        ans = []
+        path = []
+
+        def backtrack(index):
+            ans.append(path.copy())
+
+            for i in range(index, n):
+                path.append(nums[i])
+                backtrack(i+1)
+                path.pop()
+
+        backtrack(0)
+        return ans
+
+```
+
+
+### 31. 组合总和
+
+Problem: 给你一个 无重复元素 的整数数组 candidates 和一个目标整数 target ，找出 candidates 中可以使数字和为目标数 target 的 所有 不同组合 ，并以列表形式返回。你可以按 任意顺序 返回这些组合。
+
+think: 终止条件 if sum(path) >= target， 无顺序防止重复 for i in range(index,n)， 可以重复选取 backtrack(i)
+
+Solution:
+
+```py
+class Solution:
+    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
+
+        ans = []
+
+        path = []
+        n = len(candidates)
+        def backtrack(index):
+            if sum(path) >= target:
+                if sum(path) == target:
+                    ans.append(path.copy())
+                return 
+            
+            for i in range(index,n):
+                path.append(candidates[i])
+                backtrack(i)
+                path.pop()
+
+        backtrack(0)
+
+        return ans
+
+```
+
+### 32. 矩阵置零
+
+Problem:
+
+think: 
+
+Solution:
+
+```py
+
+```
