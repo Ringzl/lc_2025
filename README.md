@@ -1022,14 +1022,75 @@ class Solution:
 
 ```
 
-### 32. 矩阵置零
+date: 20250806
 
-Problem:
+### 32. 合并两个有序链表
 
-think: 
+Problem: 将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。 
+
+think: p,q 分别遍历两个链表，对比节点值大小，小的追加到新链表后面
 
 Solution:
 
 ```py
+class Solution:
+    def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
 
+        list3 = ListNode()
+        l3 = list3
+        while list1 != None and list2 != None:
+            if list1.val <= list2.val:
+                new_val = list1.val
+                list1 = list1.next
+            else:
+                new_val = list2.val
+                list2 = list2.next
+
+
+            node = ListNode(new_val)
+            l3.next = node
+            l3 = node
+        
+        while list1 != None:
+            node = ListNode(list1.val)
+            l3.next = node
+            l3 = node
+            list1 = list1.next
+
+        while list2 != None:
+            node = ListNode(list2.val)
+            l3.next = node
+            l3 = node
+            list2 = list2.next
+
+        return list3.next
+```
+
+### 33. 将有序数组转换为二叉搜索树
+
+Problem: 给你一个整数数组 nums ，其中元素已经按 升序 排列，请你将其转换为一棵 平衡 二叉搜索树。
+
+think: 二叉搜索树中序遍历拿到有序数组，平衡：高度相差不超过1，树不唯一； 中序遍历，总是选择中间位置及左边的数字作为根节点
+
+Solution:
+
+```py
+class Solution:
+    def sortedArrayToBST(self, nums: List[int]) -> Optional[TreeNode]:
+
+        def helper(nums, left, right):
+
+            if left > right:
+                return 
+
+            # 中间位置/左边作为根节点 向下取整
+            mid = left + (right - left) // 2
+
+            root = TreeNode(nums[mid])
+            root.left = helper(nums, left, mid - 1)
+            root.right = helper(nums, mid + 1, right)
+
+            return root
+
+        return helper(nums, 0, len(nums) - 1)
 ```
