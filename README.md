@@ -1094,3 +1094,69 @@ class Solution:
 
         return helper(nums, 0, len(nums) - 1)
 ```
+
+### 34. 岛屿数量
+
+Problem: 给你一个由 '1'（陆地）和 '0'（水）组成的的二维网格，请你计算网格中岛屿的数量。岛屿总是被水包围，并且每座岛屿只能由水平方向和/或竖直方向上相邻的陆地连接形成。
+
+think: 每发现一个陆地格子，进行dfs/bfs搜索，并标记访问过的格子
+
+
+Solution:
+
+```py
+class Solution:
+    def numIslands(self, grid: List[List[str]]) -> int:
+        
+        m, n = len(grid), len(grid[0])
+        is_visited = [[False for _ in range(n)] for _ in range(m)]
+
+
+        dirs = [
+            [0,1], [0,-1], [1,0], [-1,0]
+        ]
+
+
+
+        def dfs(i, j):
+            for d in dirs:
+                ni = i + d[0]
+                nj = j + d[1]
+                if ni < 0 or ni >= m or nj < 0 or nj >= n or is_visited[ni][nj]:
+                    continue
+                
+                if grid[ni][nj] == '1':
+                    is_visited[ni][nj] = True
+                    dfs(ni, nj)
+
+
+        def bfs(i, j):
+            q = deque()
+            is_visited[i][j] = True
+            q.append((i,j))
+
+            while len(q) > 0:
+                x, y = q.popleft()
+                for d in dirs:
+                    nx = x + d[0]
+                    ny = y + d[1]
+
+                    if nx < 0 or nx >= m or ny < 0 or ny >= n or is_visited[nx][ny]:
+                        continue
+
+                    if grid[nx][ny] == '1':
+                        is_visited[nx][ny] = True
+                        q.append((nx, ny))
+            
+        ans = 0
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j] == '1' and not is_visited[i][j]:
+                    # dfs(i,j)
+                    bfs(i,j)
+                    ans += 1
+
+        return ans
+
+```
+
