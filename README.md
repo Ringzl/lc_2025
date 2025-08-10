@@ -1160,3 +1160,139 @@ class Solution:
 
 ```
 
+date:20250810
+### 35. 矩阵置零
+
+Problem: 给定一个 m x n 的矩阵，如果一个元素为 0 ，则将其所在行和列的所有元素都设为 0 。请使用 原地 算法。
+
+think: 遍历所有元素，保存0所在行、列
+
+Solution:
+
+```py
+class Solution:
+    def setZeroes(self, matrix: List[List[int]]) -> None:
+        """
+        Do not return anything, modify matrix in-place instead.
+        """
+        m, n = len(matrix), len(matrix[0])
+        rows = set()
+        cols = set()
+        for i in range(m):
+            for j in range(n):
+                if matrix[i][j] == 0:
+                    rows.add(i)
+                    cols.add(j)
+        
+        for row in rows:
+            matrix[row][:] = [0 for _ in range(n)]
+        
+        for i in range(m):
+            for col in cols:
+                matrix[i][col] = 0
+
+        return matrix
+```
+
+### 36.  电话号码的字母组合
+
+Problem:给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按 任意顺序 返回。给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。
+
+think: 先构建映射，使用index纵向形成解，横向遍历每个数字可取的字母，注意回溯 backtrack(index+1)
+
+
+Solution: 
+
+```py
+class Solution:
+    def letterCombinations(self, digits: str) -> List[str]:
+
+        nc_dct = {
+            '2': 'abc',
+            '3': 'def', 
+            '4': 'ghi',
+            '5': 'jkl',
+            '6': 'mno',
+            '7': 'pqrs',
+            '8': 'tuv', 
+            '9': 'wxyz'
+        }
+
+        if digits == "":
+            return []
+        
+        ans = []
+        self.path = ""
+        n = len(digits)
+        
+        def backtrack(index):
+            if index == n:
+                ans.append(self.path)
+            else:
+                for c in nc_dct[digits[index]]:
+                    self.path += c
+                    backtrack(index+1)
+                    self.path = self.path[:-1]
+
+        backtrack(0)
+        return ans
+```
+
+### 37. 搜索二维矩阵
+
+Problem:给你一个满足下述两条属性的 m x n 整数矩阵：每行中的整数从左到右按非严格递增顺序排列。
+每行的第一个整数大于前一行的最后一个整数。给你一个整数 target ，如果 target 在矩阵中，返回 true ；否则，返回 false 。
+
+think: 二维当一维看，二分法
+
+Solution:
+
+```py
+class Solution:
+    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
+        
+        m, n = len(matrix), len(matrix[0])
+        left = 0 
+        right = m * n -1
+
+        while left <= right:
+
+            mid = left + (right - left) // 2
+            x = mid // n
+            y = mid % n
+
+            if matrix[x][y] == target:
+                return True
+
+            elif matrix[x][y] < target:
+                left = mid + 1
+            else:
+                right = mid - 1
+
+        return False
+```
+
+### 38. 买卖股票的最佳时机
+
+Problem: 给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格。你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。设计一个算法来计算你所能获取的最大利润。返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 。
+
+think: 买入、卖出时机 i、j, ans = max(ans, prices[j] - min_price), 
+
+Solution:
+
+```py
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+
+        ans = 0
+        n = len(prices)
+
+        min_price = float('inf')
+        for i in range(n):
+            if prices[i] < min_price:
+                min_price = prices[i]
+            else:
+                ans = max(ans, prices[i] - min_price )
+
+        return ans
+```
