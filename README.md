@@ -1296,3 +1296,41 @@ class Solution:
 
         return ans
 ```
+
+### 22. 括号生成
+
+Problem: 数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 有效的 括号组合。
+
+think: 回溯，停止条件 左右括号数相同保存解 left == right， left < right 或 left > n return
+
+Solution:
+
+```py
+class Solution:
+    def generateParenthesis(self, n: int) -> List[str]:
+        
+        ans = []
+        self.path = ""
+        def backtrack(left, right):
+            if (left == n and right == n):
+                ans.append(self.path)
+                return
+            
+            if left < right or left > n:
+                return 
+            
+            self.path += '('
+            backtrack(left + 1, right)
+            self.path = self.path[:-1]
+
+            self.path += ')'
+            backtrack(left, right+1)
+            self.path = self.path[:-1]
+
+        backtrack(0,0)
+
+        return ans
+```
+
+
+
