@@ -1297,7 +1297,7 @@ class Solution:
         return ans
 ```
 
-### 22. 括号生成
+### 39. 括号生成
 
 Problem: 数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 有效的 括号组合。
 
@@ -1332,5 +1332,59 @@ class Solution:
         return ans
 ```
 
+date:20250812
 
+### 40. 腐烂的橘子
 
+Problem:在给定的 m x n 网格 grid 中，每个单元格可以有以下三个值之一：
+值 0 代表空单元格；
+值 1 代表新鲜橘子；
+值 2 代表腐烂的橘子。
+每分钟，腐烂的橘子 周围 4 个方向上相邻 的新鲜橘子都会腐烂。
+返回 直到单元格中没有新鲜橘子为止所必须经过的最小分钟数。如果不可能，返回 -1 。
+
+think: 直接 bfs 层序遍历，标记腐烂，最后返回层数
+
+Solution:
+
+```py
+class Solution:
+    def orangesRotting(self, grid: List[List[int]]) -> int:
+
+        m, n = len(grid), len(grid[0])
+        cnt = 0
+        q = deque()
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j] == 1:
+                    cnt += 1
+                elif grid[i][j] == 2:
+                    q.appendleft([i,j])
+        if cnt == 0:
+            return 0
+
+        ans = 0
+
+        dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+
+        while cnt > 0 and len(q) > 0:
+            size = len(q)
+
+            for i in range(size):
+                x, y = q.pop()
+
+                for d in dirs:
+                    nx, ny = x + d[0], y + d[1]
+
+                    # 未超出边界且新鲜
+                    if nx >= 0 and nx < m and ny >= 0 and ny < n and  grid[nx][ny] == 1:
+                        cnt -= 1
+                        grid[nx][ny] = 2
+                        q.appendleft([nx,ny])
+            ans += 1
+        
+        if cnt > 0:
+            return -1
+        else:
+            return ans
+```
