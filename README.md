@@ -1388,3 +1388,44 @@ class Solution:
         else:
             return ans
 ```
+
+### 41. 找到字符串中所有字母异位词
+
+Problem: 给定两个字符串 s 和 p，找到 s 中所有 p 的 异位词 的子串，返回这些子串的起始索引。不考虑答案输出的顺序。
+
+think: 
+1. 直接排序s和p, 遍历s对比p
+2. 用两个列表表示每个字符出现次数
+Solution:
+
+```py
+class Solution:
+    def findAnagrams(self, s: str, p: str) -> List[int]:
+
+        # p = sorted(p)
+        # n = len(s)
+        # np = len(p)
+
+        # ans = []
+        # for i in range(n-np+1):
+        #     tmp = sorted(s[i:i+np])
+        #     if tmp == p:
+        #         ans.append(i)
+        # return ans
+
+        s_cnt = [0 for _ in range(26)]
+        p_cnt = [0 for _ in range(26)]
+
+        for i in range(len(p)):
+            p_cnt[ord(p[i]) - ord('a')] += 1
+        ans = []
+        left = 0
+        for right in range(len(s)):
+            s_cnt[ord(s[right]) - ord('a')] += 1
+
+            if right - left + 1 == len(p):
+                if s_cnt == p_cnt:
+                    ans.append(left)
+                s_cnt[ord(s[left]) - ord('a')] -= 1
+                left += 1
+```
