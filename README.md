@@ -1429,3 +1429,66 @@ class Solution:
                 s_cnt[ord(s[left]) - ord('a')] -= 1
                 left += 1
 ```
+
+### 42. 杨辉三角
+
+Problem: 给定一个非负整数 numRows，生成「杨辉三角」的前 numRows 行。
+
+think:  第n行有n个数，分别为 1 a[n][i] = a[n-1][i-1] + a[n-1][i] 
+
+Solution:
+
+```py
+class Solution:
+    def generate(self, numRows: int) -> List[List[int]]:
+
+      if numRows == 0:
+        return []
+      else:
+        ans = [[1]]
+
+      for i in range(1, numRows):
+
+        tmp = [1]
+        for j in range(1, i):
+          tmp.append(ans[i-1][j-1] + ans[i-1][j])
+
+        tmp.append(1)
+
+        ans.append(tmp)
+
+      return ans
+```
+
+### 43. 打家劫舍
+
+Problem: 你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警。给定一个代表每个房屋存放金额的非负整数数组，计算你 不触动警报装置的情况下 ，一夜之内能够偷窃到的最高金额。
+
+think: 
+1. 不相邻，可以偷到最多的金额
+2. 偷k, 总金额为前k-2间房屋 + 第k
+3. 不偷k,总金额为前k-1间房屋 
+dp[i] = max(dp[i-2]+nums[i], dp[i-1])
+
+
+Solution:
+
+```py
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        n = len(nums)
+        if n == 0:
+            return 0
+        if n == 1:
+            return nums[0]
+        
+        dp = [0 for _ in range(n)]
+
+        dp[0] = nums[0]
+        dp[1] = max(nums[0], nums[1])
+
+        for i in range(2, n):
+            dp[i] = max(dp[i-2] + nums[i], dp[i-1])
+        
+        return dp[n-1]
+```
