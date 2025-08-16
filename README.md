@@ -1492,3 +1492,89 @@ class Solution:
         
         return dp[n-1]
 ```
+
+### 44. 完全平方数
+
+Problem: 给你一个整数 n ，返回 和为 n 的完全平方数的最少数量 。完全平方数 是一个整数，其值等于另一个整数的平方；换句话说，其值等于一个整数自乘的积。例如，1、4、9 和 16 都是完全平方数，而 3 和 11 不是。
+
+think: dp[i] 表示最少需要的平方数表示i, 这些数小于等于 $\sqrt(i)$
+
+
+Solution:
+
+```py
+class Solution:
+    def numSquares(self, n: int) -> int:
+        
+        dp = [0 for _ in range(n+1)]
+        j = 1
+        for i in range(1, n+1):
+            dp[i] = i # 最坏情况
+            while j * j <= i:
+                dp[i] = min(dp[i], dp[i-j*j] + 1)
+                j+=1
+
+        return dp[n]
+```
+
+### 45. 两数相加
+
+Problem: 给你两个 非空 的链表，表示两个非负的整数。它们每位数字都是按照 逆序 的方式存储的，并且每个节点只能存储 一位 数字。请你将两个数相加，并以相同形式返回一个表示和的链表。
+
+think: 
+暴力解法： 将链表数字解析出来求和再新建链表添加
+
+2: 将两个链表看成是相同长度的进行遍历，如果一个链表较短则在前面补 0, 每一位计算的同时需要考虑上一位的进位问题，而当前位计算结束后同样需要更新进位值
+
+Solution:
+
+```py
+class Solution:
+    def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
+        
+        # s1 = ""
+        # while l1 != None:
+        #     s1 = str(l1.val) + s1
+        #     l1 = l1.next
+        
+        # s2 = ""
+        # while l2 != None:
+        #     s2 = str(l2.val) + s2
+        #     l2 = l2.next
+
+        # s_sum = reversed(str(int(s1) + int(s2)))
+
+        # res = ListNode()
+        # p = res
+        # for s in s_sum:
+        #     p.next = ListNode(int(s))
+        #     p = p.next
+        
+        # return res.next
+
+        pre = ListNode(0)
+        cur = pre
+        carry = 0
+        while (l1 != None or l2 != None):
+
+            x = l1.val if l1 != None else 0
+            y = l2.val if l2 != None else 0
+
+            s = x + y + carry
+            carry = s // 10
+            s = s % 10
+            cur.next = ListNode(s)
+
+            cur = cur.next
+
+            if l1 != None:
+                l1 = l1.next
+            if l2 != None:
+                l2 = l2.next
+
+        if carry != 0:
+            cur.next = ListNode(carry)
+
+        return pre.next
+```
+
