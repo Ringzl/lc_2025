@@ -1743,3 +1743,94 @@ class Solution:
             
             root = root.right 
 ```
+
+### 48. 删除链表的倒数第 N 个结点
+
+Problem: 给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
+
+think: 双指针间隔n, 右边指针到表尾时左边指针即为倒数第n个节点
+
+Solution:
+
+```py
+class Solution:
+    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+
+        left, right = head, head
+
+        for i in range(n):
+            right = right.next
+
+        pre = None
+        while right != None:
+            pre = left
+            left = left.next
+            right = right.next
+
+        if pre != None:
+            pre.next = left.next
+            return head
+        elif left != None:
+            return left.next
+        else:
+            return None
+```
+
+### 49. 在排序数组中查找元素的第一个和最后一个位置
+
+Problem: 给你一个按照非递减顺序排列的整数数组 nums，和一个目标值 target。请你找出给定目标值在数组中的开始位置和结束位置。如果数组中不存在目标值 target，返回 [-1, -1]。
+
+
+think: 
+先找第一个等于: 等于时往左找
+再找最后一个等于：等于时往右找
+
+Solution:
+
+```py
+class Solution:
+    def searchRange(self, nums: List[int], target: int) -> List[int]:
+
+        n = len(nums)
+
+        ans = [-1, -1]
+
+        # 先找第一个等于
+        left, right = 0, n-1
+        while left <= right:
+            mid = left + (right - left) // 2
+            if nums[mid] == target:
+                ans[0] = mid
+                right = mid - 1
+            elif nums[mid] < target:
+                left = mid + 1
+            else:
+                right = mid - 1
+
+        # 再找最后一个等于
+        left, right = 0, n-1
+        while left <= right:
+            mid = left + (right - left) // 2
+            if nums[mid] == target:
+                ans[1] = mid
+                left = mid + 1
+            elif nums[mid] < target:
+                left = mid + 1
+            else:
+                right = mid - 1
+
+        return ans
+```
+
+### 50. 二叉树的右视图
+
+Problem: 给定一个二叉树的 根节点 root，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。
+
+think: 
+
+
+Solution:
+
+```py
+
+```
