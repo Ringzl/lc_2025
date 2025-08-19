@@ -1826,11 +1826,30 @@ class Solution:
 
 Problem: 给定一个二叉树的 根节点 root，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。
 
-think: 
-
+think: 层序遍历，保存每一层最后一个数
 
 Solution:
 
 ```py
+class Solution:
+    def rightSideView(self, root: Optional[TreeNode]) -> List[int]:
+        
+        q = deque()
+        if root == None:
+            return []
+        q.appendleft(root)
+        ans = []
+        while len(q) > 0:
+            size = len(q)
 
+            for i in range(size):
+                node = q.pop()
+
+                if i == size-1:
+                    ans.append(node.val)
+                if node.left:
+                    q.appendleft(node.left)
+                if node.right:
+                    q.appendleft(node.right)
+        return ans
 ```
