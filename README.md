@@ -1879,3 +1879,31 @@ class Solution:
         
         return dp[amount] if dp[amount] != float('inf') else - 1
 ```
+
+### 52. 只出现一次的数字 
+
+problem: 给你一个 非空 整数数组 nums ，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。
+
+think: 
+1. 使用字典统计次数
+2. 数组中的全部元素的异或运算结果即为数组中只出现一次的数字
+
+Solution:
+
+```py
+class Solution:
+    def singleNumber(self, nums: List[int]) -> int:
+
+        # num_cnt = {}
+        # n = len(nums)
+        # for i in range(n):
+        #     num_cnt[nums[i]] = num_cnt.get(nums[i], 0) + 1
+        
+        # for num in num_cnt:
+        #     if num_cnt[num] == 1:
+        #         return num
+        ans = 0
+        for num in nums:
+            ans ^= num
+        return ans
+```
