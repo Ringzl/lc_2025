@@ -1907,3 +1907,149 @@ class Solution:
             ans ^= num
         return ans
 ```
+
+### 53. 不同路径
+
+problem: 一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）。机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。问总共有多少条不同的路径？
+
+
+think: dp[i][j] 表示到达 (i,j)的路径数量，dp[i][j] = dp[i-1][j] + dp[i][j-1]
+
+
+Solution:
+
+```py
+class Solution:
+    def uniquePaths(self, m: int, n: int) -> int:
+
+        dp = [[0 for _ in range(n)] for _ in range(m)]
+
+        for j in range(n):
+            dp[0][j] = 1
+        for i in range(m):
+            dp[i][0] = 1
+
+        for i in range(1, m):
+            for j in range(1, n):
+                dp[i][j] = dp[i-1][j] + dp[i][j-1]
+
+        return dp[m-1][n-1]
+```
+
+### 54. 最小栈
+
+problem: 设计一个支持 push ，pop ，top 操作，并能在常数时间内检索到最小元素的栈。
+
+实现 MinStack 类:
+MinStack() 初始化堆栈对象。
+void push(int val) 将元素val推入堆栈。
+void pop() 删除堆栈顶部的元素。
+int top() 获取堆栈顶部的元素。
+int getMin() 获取堆栈中的最小元素。
+
+think: 使用当前最小值栈保存最小值记录
+
+Solution:
+
+```py
+
+class MinStack:
+
+    def __init__(self):
+        self.st = []
+        self.min_st = [math.inf]
+
+    def push(self, val: int) -> None:
+        self.st.append(val)
+        self.min_st.append(min(self.min_st[-1], val))
+
+    def pop(self) -> None:
+        self.st.pop()
+        self.min_st.pop()
+        
+
+    def top(self) -> int:
+        return self.st[-1]
+        
+
+    def getMin(self) -> int:
+        return self.min_st[-1]
+        
+
+```
+
+
+### 55. 跳跃游戏
+
+problem: 给你一个非负整数数组 nums ，你最初位于数组的 第一个下标 。数组中的每个元素代表你在该位置可以跳跃的最大长度。判断你是否能够到达最后一个下标，如果可以，返回 true ；否则，返回 false 。
+
+think: 位置可达 i<=max_pos, 更新最远可达 max_pos = max(max_pos, i + nums[i])
+
+Solution:
+
+```py
+class Solution:
+    def canJump(self, nums: List[int]) -> bool:
+
+        max_pos = 0
+        n = len(nums)
+        for i in range(n):
+
+            if i <= max_pos:
+                max_pos = max(max_pos, i + nums[i])
+
+                if max_pos >= n-1:
+                    return True
+
+        return False
+```
+
+### 56. 相交链表
+
+problem: 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null 。
+
+think: 
+1. 用set保存访问过的节点，判断交点
+2. 如果两个A,B链表走相同的距离会重合
+
+Solution:
+
+```py
+class Solution:
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> Optional[ListNode]:
+
+        # A = headA
+        # B = headB
+
+        # while A != B:
+        #     A = A.next if A else headB
+        #     B = B.next if B else headA
+
+        # return A
+
+        m = 0
+        n = 0
+        p, q = headA, headB
+        while p != None:
+            p = p.next
+            m += 1
+        while q != None:
+            q = q.next
+            n += 1
+
+        p, q = headA, headB
+        if m <= n:
+            for i in range(n-m):
+                q = q.next
+        else:
+            for i in range(m-n):
+                p = p.next
+
+        while (q != None) and (p != None):
+            if p == q:
+                return p
+            p = p.next
+            q = q.next
+
+        return None
+```
