@@ -2053,3 +2053,41 @@ class Solution:
 
         return None
 ```
+
+### 57. 乘积最大子数组
+
+problem: 给你一个整数数组 nums ，请你找出数组中乘积最大的非空连续 子数组（该子数组中至少包含一个数字），并返回该子数组所对应的乘积。测试用例的答案是一个 32-位 整数。
+
+
+think: 动态规划，dp[i] 为前i个数 乘积最大的非空连续 子数组的乘积
+
+nums[i] >= dp[i-1] >= 0, dp[i] = nums[i]
+dp[i-1] < 0 and nums[i] < 0, dp[i] = mindp[i-1] * nums[i]
+nums[i] > 0, d[i] = dp[i-1] * nums[i]
+
+
+Solution:
+
+```py
+class Solution:
+    def maxProduct(self, nums: List[int]) -> int:
+        
+        n = len(nums)
+        pos = max(0, nums[0])
+        neg = min(0, nums[0])
+
+        ans = nums[0]
+        for i in range(1, n):
+            
+            if nums[i] < 0:
+                pos_tmp = pos
+                pos = max(nums[i], nums[i] * neg)
+                neg = min(nums[i], nums[i] * pos_tmp)
+            else:
+                pos = max(nums[i], nums[i] * pos)
+                neg = min(nums[i], nums[i] * neg)
+            
+            ans = max(ans, pos)
+
+        return ans
+```
