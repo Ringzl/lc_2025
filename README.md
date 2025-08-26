@@ -2091,3 +2091,54 @@ class Solution:
 
         return ans
 ```
+
+### 58. 二叉树展开为链表
+
+problem: 给你二叉树的根结点 root ，请你将它展开为一个单链表：展开后的单链表应该同样使用 TreeNode ，其中 right 子指针指向链表中下一个结点，而左子指针始终为 null 。展开后的单链表应该与二叉树 先序遍历 顺序相同。
+
+think: 
+1. 递归先序遍历改树
+2. 将左子树插入到右子树的地方；将原来的右子树接到左子树的最右边节点；考虑新的右子树的根节点，一直重复上边的过程，直到新的右子树为 null
+
+Solution:
+
+```py
+class Solution:
+    def flatten(self, root: Optional[TreeNode]) -> None:
+        """
+        Do not return anything, modify root in-place instead.
+        """
+        
+        # val_lst = []
+        # def preorder(root):
+        #     if root == None:
+        #         return 
+        #     val_lst.append(root)
+        #     preorder(root.left)
+        #     preorder(root.right)
+        # preorder(root) 
+       
+        # for i in range(1, len(val_lst)):
+        #     prev, cur = val_lst[i-1], val_lst[i]
+        #     prev.left = None
+        #     prev.right = cur
+
+        while root:
+            # 左子树为 null，直接考虑下一个节点
+            if root.left == None:
+                root = root.right
+            else:
+                # 找左子树最右边的节点
+                pre = root.left
+                while pre.right:
+                    pre = pre.right
+                
+                # 将原来的右子树接到左子树的最右边节点
+                pre.right = root.right
+
+                # 将左子树插入到右子树的地方
+                root.right = root.left
+                root.left = None
+
+                root = root.right
+```
