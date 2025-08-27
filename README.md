@@ -2142,3 +2142,39 @@ class Solution:
 
                 root = root.right
 ```
+
+### 59. 最小路径和
+
+problem: 给定一个包含非负整数的 m x n 网格 grid ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。说明：每次只能向下或者向右移动一步。
+
+think: 
+
+dp[i][j] 表示从左上角到 （i,j）路径数字最小总和
+
+dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + nums[i][j]
+
+Solution:
+
+```py
+class Solution:
+    def minPathSum(self, grid: List[List[int]]) -> int:
+
+        m = len(grid)
+        n = len(grid[0])
+
+        import math
+        dp = [[math.inf for _ in range(n)] for _ in range(m)]
+
+        dp[0][0] = grid[0][0]
+        for j in range(1, n):
+            dp[0][j] = dp[0][j-1] + grid[0][j]
+        
+        for i in range(1, m):
+            dp[i][0] = dp[i-1][0] + grid[i][0]
+
+        for i in range(1, m):
+            for j in range(1, n):
+                dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
+        
+        return dp[m-1][n-1]
+```
