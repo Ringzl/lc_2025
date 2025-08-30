@@ -2259,3 +2259,187 @@ class Solution:
             nums[0:k] = tmp
         
 ```
+
+[20250830]
+
+### 62. 除自身以外数组的乘积
+
+problem: 给你一个整数数组 nums，返回 数组 answer ，其中 answer[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积 。
+
+think: 先分别计算数组元素左侧乘积数组L，和右侧乘积数组R, ans[i] = L[i] * R[i]
+
+
+Solution:
+
+```py
+class Solution:
+    def productExceptSelf(self, nums: List[int]) -> List[int]:
+        
+        n = len(nums)
+
+        # ans = []
+        # for i in range(n):
+        #     tmp = 1
+        #     for j in range(n):
+        #         if j != i:
+        #             tmp *= nums[j]
+        #     ans.append(tmp)
+        # return ans
+
+        L = [1 for _ in range(n)] # 左侧乘积
+        for i in range(1, n):
+            L[i] = nums[i-1] * L[i-1]
+
+        R = [1 for _ in range(n)] # 右侧乘积
+        for i in range(n-2, -1, -1):
+            R[i] = nums[i+1] * R[i+1]
+        
+        ans = []
+        for i in range(n):
+            ans.append(L[i] * R[i])
+        
+        return ans
+```
+
+### 63. 旋转图像
+
+problem: 给定一个 n × n 的二维矩阵 matrix 表示一个图像。请你将图像顺时针旋转 90 度。你必须在 原地 旋转图像，这意味着你需要直接修改输入的二维矩阵。请不要 使用另一个矩阵来旋转图像。
+
+think: 旋转 90 度==> 先上下翻转，再对称翻转
+
+
+Solution:
+
+```py
+class Solution:
+    def rotate(self, matrix: List[List[int]]) -> None:
+        """
+        Do not return anything, modify matrix in-place instead.
+        """
+
+        n = len(matrix)
+
+        for i in range(n // 2):
+            tmp = matrix[i]
+            matrix[i] =  matrix[n-i-1]
+            matrix[n-i-1] = tmp
+        
+        for i in range(n):
+            for j in range(n):
+                if i < j:
+                    matrix[i][j], matrix[j][i]= matrix[j][i], matrix[i][j]
+        
+        return matrix
+```
+
+### 64. 搜索二维矩阵 II
+
+problem: 编写一个高效的算法来搜索 m x n 矩阵 matrix 中的一个目标值 target 。该矩阵具有以下特性：
+每行的元素从左到右升序排列。
+每列的元素从上到下升序排列。
+
+think: 
+1. 对每一行进行二分搜索
+2. 从根（右上角）开始搜索
+
+
+Solution:
+
+```py
+class Solution:
+    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
+
+        m, n = len(matrix), len(matrix[0])
+
+        # for i in range(m):
+
+        #     l, r = 0, n-1
+        #     while l <= r:
+        #         mid = l + (r-l)//2
+
+        #         if matrix[i][mid] == target:
+        #             return True
+        #         elif matrix[i][mid] > target:
+        #             r = mid - 1
+        #         else:
+        #             l = mid + 1
+
+        # return False
+
+        r, c = 0, n-1
+        while r < m and c >= 0:
+
+            if matrix[r][c] == target:
+                return True
+            elif matrix[r][c] < target:
+                r += 1
+            else:
+                c -= 1
+        
+        return False
+```
+
+### 65. 两两交换链表中的节点
+
+problem: 给你一个链表，两两交换其中相邻的节点，并返回交换后链表的头节点。你必须在不修改节点内部的值的情况下完成本题（即，只能进行节点交换）。
+
+think: 
+
+使用哑变量节点保存前一个节点 pre
+交换 node1 和 node2
+
+pre.next = node2
+node1.next = node2.next
+node2.next = node1
+pre = node1
+
+Solution:
+
+```py
+class Solution:
+    def swapPairs(self, head: Optional[ListNode]) -> Optional[ListNode]:
+
+
+        dummy = ListNode()
+        dummy.next = head
+        pre = dummy
+        while pre.next != None and pre.next.next != None:
+            node1 = pre.next
+            node2 = pre.next.next
+
+            pre.next = node2
+            node1.next = node2.next
+            node2.next = node1
+            pre = node1
+
+        return dummy.next
+```
+
+### 66. 随机链表的复制
+
+problem: 给你一个长度为 n 的链表，每个节点包含一个额外增加的随机指针 random ，该指针可以指向链表中的任何节点或空节点。
+
+think: 因为随机指针的存在，当我们拷贝节点时，「当前节点的随机指针指向的节点」可能还没创建
+
+
+Solution:
+
+```py
+class Solution:
+    def __init__(self):
+        self.cacheNode = dict()
+    def copyRandomList(self, head: 'Optional[Node]') -> 'Optional[Node]':
+
+        if head == None:
+            return 
+
+        if head not in self.cacheNode:
+            headNew = Node(head.val)
+            self.cacheNode[head] = headNew
+
+            headNew.next = self.copyRandomList(head.next)
+            headNew.random = self.copyRandomList(head.random)
+
+        return self.cacheNode[head]
+        
+```
