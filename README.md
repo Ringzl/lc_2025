@@ -2587,3 +2587,109 @@ class LRUCache(collections.OrderedDict):
         if len(self) > self.capacity:
             self.popitem(last=False)
 ```
+
+20250901
+
+### 69. 从前序与中序遍历序列构造二叉树
+
+problem: 给定两个整数数组 preorder 和 inorder ，其中 preorder 是二叉树的先序遍历， inorder 是同一棵树的中序遍历，请构造二叉树并返回其根节点。
+
+think: 
+前序列表第一个值为root, 在中序遍历找到root的位置，左边为左子树，右边为右子树； 
+递归构建：
+- 从前序遍历中取出第一个元素作为当前根节点。
+- 在中序遍历中找到根节点的位置，以此划分左右子树的节点集合。
+- 递归构建左右子树。
+
+Solution:
+
+```py
+class Solution:
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
+        
+        # 中序元素位置
+        inorder_map = dict()
+        for i in range(len(inorder)):
+            inorder_map[inorder[i]] = i
+        
+
+        # 建树
+        # pStart, pEnd: 前序遍历的起始和结束位置
+        # iStart, iEnd: 中序遍历的起始和结束位置
+        def build(pStart, pEnd, iStart, iEnd):
+            if pStart > pEnd or iStart > iEnd:
+                return None
+            
+            # 前序遍历的第一个元素是根节点
+            root_val = preorder[pStart]
+            root = TreeNode(root_val)
+
+            # 在中序遍历中找到根节点的位置
+            root_pos = inorder_map[root_val]
+
+            # 计算左子树的节点数量
+            left_num = root_pos - iStart
+            root.left = build(pStart+1, pStart+left_num, iStart, root_pos-1)
+            root.right = build(pStart+left_num+1, pEnd, root_pos+1, iEnd)
+            return root
+        
+        return build(0, len(preorder)-1, 0, len(inorder)-1)
+```
+
+
+### 70. 路径总和 III
+
+problem: 给定一个二叉树的根节点 root ，和一个整数 targetSum ，求该二叉树里节点值之和等于 targetSum 的 路径 的数目。路径 不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）。
+
+think: 
+路径方向必须是向下： 穷举所有的可能，我们访问每一个节点 node，检测以 node 为起始节点且向下延深的路径有多少种
+
+Solution:
+
+```py
+class Solution:
+    def rootSum(self, root, targetSum):
+        if root == None:
+            return 0
+        
+        ret = 0
+        if root.val == targetSum:
+            ret += 1
+        
+        ret += self.rootSum(root.left, targetSum - root.val)
+        ret += self.rootSum(root.right, targetSum - root.val)
+
+        return ret
+
+    def pathSum(self, root: Optional[TreeNode], targetSum: int) -> int:
+        if root == None:
+            return 0
+
+        ret = self.rootSum(root, targetSum)
+        ret += self.pathSum(root.left, targetSum)
+        ret += self.pathSum(root.right, targetSum)
+
+        return ret
+
+# 搜索完以某个节点为根的左右子树之后，应当回溯地将路径总和从哈希表中删除，防止统计到跨越两个方向的路径。
+class Solution:
+    def pathSum(self, root: Optional[TreeNode], targetSum: int) -> int:
+
+        prefix = Counter()
+        prefix[0] = 1
+        ans = 0
+
+        def dfs(root, Sum):
+            if root == None:
+                return 
+            Sum += root.val
+            nonlocal ans
+            ans += prefix[Sum - targetSum]
+            prefix[Sum] += 1
+            dfs(root.left, Sum)
+            dfs(root.right, Sum)
+            prefix[Sum] -= 1
+        
+        dfs(root, 0)
+        return ans        
+```
