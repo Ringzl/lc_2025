@@ -2693,3 +2693,35 @@ class Solution:
         dfs(root, 0)
         return ans        
 ```
+
+### 71. 二叉树的最近公共祖先
+
+problem: 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先（满足 x 是 p、q 的祖先且 x 的深度尽可能大）。
+
+
+think: 
+条件：
+1. 左子树和右子树均包含 p 节点或 q 节点 
+2. x 恰好是 p 节点或 q 节点且它的左子树或右子树有一个包含了另一个节点
+
+Solution:
+
+```py
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        
+
+        if root == None or root == p or root == q:
+            return root
+
+        # 左子树找p或q
+        left = self.lowestCommonAncestor(root.left, p, q)
+        right = self.lowestCommonAncestor(root.right, p, q)
+
+        # 左右都找到
+        if left and right:
+            return root
+        
+        # 只找到一个
+        return left if left else right
+```
