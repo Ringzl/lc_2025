@@ -2698,7 +2698,6 @@ class Solution:
 
 problem: 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先（满足 x 是 p、q 的祖先且 x 的深度尽可能大）。
 
-
 think: 
 条件：
 1. 左子树和右子树均包含 p 节点或 q 节点 
@@ -2724,4 +2723,108 @@ class Solution:
         
         # 只找到一个
         return left if left else right
+```
+
+[20250903]
+
+### 72. 课程表
+
+problem: 你这个学期必须选修 numCourses 门课程，记为 0 到 numCourses - 1 。在选修某些课程之前需要一些先修课程。 先修课程按数组 prerequisites 给出，其中 prerequisites[i] = [ai, bi] ，表示如果要学习课程 ai 则 必须 先学习课程  bi 。例如，先修课程对 [0, 1] 表示：想要学习课程 0 ，你需要先完成课程 1 。请你判断是否可能完成所有课程的学习？如果可以，返回 true ；否则，返回 false 。
+
+think: 拓扑排序： 图 G 中存在环，图 G 不存在拓扑排序。
+
+拓扑排序中最前面的节点没有入边；
+一个节点加入答案中后，我们就可以移除它的所有出边，代表着它的相邻节点少了一门先修课程的要求；
+某个相邻节点变成了「没有任何入边的节点」，那么就代表着这门课可以开始学习
+不断地将没有入边的节点加入答案，直到答案中包含所有的节点 / 或者不存在没有入边的节点
+
+Solution:
+
+```py
+class Solution:
+    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+        
+        # 建图
+        edges = [[] for _ in range(numCourses)]
+        indegree = [0 for _ in range(numCourses)]
+
+        for info in prerequisites:
+            edges[info[1]].append(info[0])
+            indegree[info[0]] += 1
+
+        q = deque()
+        for i in range(numCourses):
+            if indegree[i] == 0:
+                q.appendleft(i)
+        
+        visited = 0
+        while q:
+            visited += 1
+            u = q.pop()
+
+            for v in edges[u]:
+                indegree[v] -= 1
+                if indegree[v] == 0:
+                    q.appendleft(v)
+        
+        return visited == numCourses
+```
+
+### 73. 实现 Trie (前缀树)
+
+
+problem: Trie（发音类似 "try"）或者说 前缀树 是一种树形数据结构，用于高效地存储和检索字符串数据集中的键。这一数据结构有相当多的应用情景，例如自动补全和拼写检查。\
+Trie() 初始化前缀树对象。
+void insert(String word) 向前缀树中插入字符串 word 。
+boolean search(String word) 如果字符串 word 在前缀树中，返回 true（即，在检索之前已经插入）；否则，返回 false 。
+boolean startsWith(String prefix) 如果之前已经插入的字符串 word 的前缀之一为 prefix ，返回 true ；否则，返回 false 。
+
+think: 
+
+判断给定的前缀是否是加入的字符串的前缀 -> 枚举给定前缀的每一位，查看字符串中是否存在字符的当前位是这个位；如果存在，就在这些字符串中去查找下一位。 -> 根据前缀对字符串进行分组
+
+相同前缀只存储一次【从根节点出发到任一个节点都是一个前缀】
+
+可以使用长度为 26 的列表来存储当前节点对应出现过的字符的子节点
+
+Solution:
+
+```py
+class Node:
+    def __init__(self):
+        self.children = [None] * 26 
+        self.isEnd = False 
+
+class Trie:
+
+    def __init__(self):
+        self.root = Node()
+        
+    def insert(self, word: str) -> None:
+        # 从根节点开始构造word对应的路径节点
+        node = self.root
+
+        for c in word:
+            char_id = ord(c) - ord('a')
+            if not node.children[char_id]:
+                node.children[char_id] = Node()
+            node = node.children[char_id]
+        node.isEnd = True
+        
+
+    def search(self, word: str) -> bool:
+        node = self.root
+        for c in word:
+            node = node.children[ord(c) - ord('a')]
+            if not node:
+                return False
+        return node.isEnd
+
+    def startsWith(self, prefix: str) -> bool:
+        node = self.root
+        for c in prefix:
+            node = node.children[ord(c) - ord('a')]
+            if not node:
+                return False
+        return True
 ```
