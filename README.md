@@ -2828,3 +2828,49 @@ class Trie:
                 return False
         return True
 ```
+
+### 74. 单词搜索
+
+problem: 给定一个 m x n 二维字符网格 board 和一个字符串单词 word 。如果 word 存在于网格中，返回 true ；否则，返回 false 。单词必须按照字母顺序，通过相邻的单元格内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。同一个单元格内的字母不允许被重复使用。
+
+think: 
+1. 遍历二维数组 每一个位置都作为起点进行dfs，注意记录访问过的位置
+2. 实现四个方向的dfs
+
+Solution:
+
+```py
+class Solution:
+    def exist(self, board: List[List[str]], word: str) -> bool:
+
+
+        def dfs(board, i, j, word, index, is_visited):
+
+            if index == len(word):
+                return True
+            
+            if i<0 or i>=len(board) or j<0 or j>=len(board[0]) or board[i][j] != word[index] or is_visited[i][j]:
+                return False  
+            
+            is_visited[i][j] = True
+            found = (
+                dfs(board, i+1, j, word, index+1, is_visited) or 
+                dfs(board, i-1, j, word, index+1, is_visited) or 
+                dfs(board, i, j+1, word, index+1, is_visited) or 
+                dfs(board, i, j-1, word, index+1, is_visited)
+            )    
+            is_visited[i][j] = False
+
+            return found
+
+        m, n = len(board), len(board[0])
+        is_visited = [[False for _ in range(n)] for _ in range(m)]
+
+        for i in range(m):
+            for j in range(n):
+                if dfs(board, i, j, word, 0, is_visited):
+                    return True
+        
+        return False
+```
+
