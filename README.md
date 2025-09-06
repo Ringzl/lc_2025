@@ -2874,3 +2874,183 @@ class Solution:
         return False
 ```
 
+20250906
+
+### 75. 分割回文串
+
+problem: 给你一个字符串 s，请你将 s 分割成一些 子串，使每个子串都是 回文串 。返回 s 所有可能的分割方案。
+
+
+think: 
+回溯 + dp
+先判断子串 s[i,j] 是否为回文串： s[i+1,j-1] 为回文串 and s[i] == s[j]
+
+is_huiwen[i][j] = (is_huiwen[i+1][j-1] and s[i] == s[j])
+
+搜索到字符串的第 i 个字符，且 s[0:i] 已被分割，需要枚举下一个子串的右边界使得s[i,j]为回文串
+
+
+
+Solution:
+
+```py
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        n = len(s)
+        is_huiwen = [
+            [True for _ in range(n)] for _ in range(n)
+        ]
+        for i in range(n-1, -1, -1):
+            for j in range(i+1, n):
+                is_huiwen[i][j] = (is_huiwen[i+1][j-1] and s[i] == s[j])
+
+        ret = []
+        ans = []
+        def dfs(s, i):
+            if i == n:
+                ret.append(ans.copy())
+                return 
+
+            for j in range(i, n):
+                if is_huiwen[i][j]:
+                    ans.append(s[i:j+1])
+                    dfs(s, j+1)
+                    ans.pop()
+        
+        dfs(s, 0)
+
+        return ret
+```
+
+### 76. 字符串解码
+
+problem: 给定一个经过编码的字符串，返回它解码后的字符串。编码规则为: k[encoded_string]，表示其中方括号内部的 encoded_string 正好重复 k 次。注意 k 保证为正整数。
+
+think: 
+使用栈维护：
+解析出数字，读取数字存入栈
+字母或'[' 直接入栈
+']' 开始处理：
+字母出栈，用数组保存，直到‘[’
+后重复 st[-1] 次
+
+
+Solution:
+
+```py
+class Solution:
+    def decodeString(self, s: str) -> str:
+        st = []
+
+        i = 0
+        while i < len(s):
+
+            cur = s[i]
+
+            if cur.isdigit():
+                # 获取数字
+                num = ''
+                while s[i].isdigit():
+                    num += s[i]
+                    i += 1
+                st.append(num)
+            elif cur.isalpha() or cur == '[':
+                st.append(s[i])
+                i += 1
+            else:
+                i += 1
+                sub = []
+                while st[-1] != '[':
+                    sub.append(st[-1])
+                    st.pop()
+                sub = sub[::-1]
+                sub = ''.join(sub)
+                
+                # 左括号出栈
+                st.pop()
+
+                # 栈顶为次数
+                rep = int(st[-1])
+                st.pop()
+
+                t = rep * sub
+                st.append(t)
+                
+                
+        return ''.join(st)
+
+```
+
+### 77. 搜索旋转排序数组
+
+problem: 整数数组 nums 按升序排列，数组中的值 互不相同 。在传递给函数之前，nums 在预先未知的某个下标 k（0 <= k < nums.length）上进行了 向左旋转，使数组变为 [nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]（下标 从 0 开始 计数）。例如， [0,1,2,4,5,6,7] 下标 3 上向左旋转后可能变为 [4,5,6,7,0,1,2] 。
+
+think: 
+1. 二分法确定有序部分
+2. 在有序部分查找
+
+
+Solution:
+
+```py
+class Solution:
+    def search(self, nums: List[int], target: int) -> int:
+        
+        n = len(nums)
+
+        if n == 0:
+            return -1
+
+        l = 0
+        r = n-1
+        while l <= r:
+
+            mid = (l+r) //2
+
+            if nums[mid] == target:
+                return mid
+            
+            # 左边有序
+            if nums[0] <= nums[mid]:
+                if nums[0] <= target < nums[mid]:
+                    r = mid - 1
+                else:
+                    l = mid + 1
+            else:
+                if nums[mid] < target <= nums[n-1]:
+                    l = mid + 1
+                else:
+                    r = mid - 1
+            
+        return -1 
+```
+
+### 78. 寻找旋转排序数组中的最小值
+problem: 已知一个长度为 n 的数组，预先按照升序排列，经由 1 到 n 次 旋转 后，得到输入数组。例如，原数组 nums = [0,1,2,4,5,6,7] 在变化后可能得到：
+若旋转 4 次，则可以得到 [4,5,6,7,0,1,2]
+若旋转 7 次，则可以得到 [0,1,2,4,5,6,7]
+注意，数组 [a[0], a[1], a[2], ..., a[n-1]] 旋转一次 的结果为数组 [a[n-1], a[0], a[1], a[2], ..., a[n-2]] 。
+
+think: 
+二分法查找
+右侧有序： r = mid
+否则： l = mid + 1
+
+Solution:
+
+```py
+class Solution:
+    def findMin(self, nums: List[int]) -> int:
+        n = len(nums)
+        l = 0
+        r = n -1
+
+        while l < r:
+            mid = l + (r -l) // 2
+            if nums[mid] < nums[r]:
+                r = mid
+            else:
+                l = mid + 1
+        
+        return nums[l]
+```
