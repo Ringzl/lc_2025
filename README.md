@@ -3093,3 +3093,38 @@ class Solution:
     
         return ans
 ```
+
+### 80. 跳跃游戏 II
+problem: 给定一个长度为 n 的 0 索引整数数组 nums。初始位置在下标 0。每个元素 nums[i] 表示从索引 i 向后跳转的最大长度。换句话说，如果你在索引 i 处，你可以跳转到任意 (i + j) 处：0 <= j <= nums[i] 且
+i + j < n 返回到达 n - 1 的最小跳跃次数。测试用例保证可以到达 n - 1。
+
+
+think: 
+
+位置i最远可达： max_pos = max(max_pos, i + nums[i])
+
+if i == end: 
+    end = max_pos // 每次走最远
+    ans += 1
+
+
+Solution:
+
+```py
+class Solution:
+    def jump(self, nums: List[int]) -> int:
+        max_pos = 0
+        n = len(nums)
+
+        ans = 0
+        end = 0
+        for i in range(n-1):
+            if i <= max_pos:
+                max_pos = max(max_pos, i + nums[i])
+
+            if i == end:
+                end = max_pos
+                ans += 1
+        return ans
+```
+
