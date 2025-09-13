@@ -3128,3 +3128,121 @@ class Solution:
         return ans
 ```
 
+### 81. 划分字母区间
+
+problem: 给你一个字符串 s 。我们要把这个字符串划分为尽可能多的片段，同一字母最多出现在一个片段中。例如，字符串 "ababcc" 能够被分为 ["abab", "cc"]，但类似 ["aba", "bcc"] 或 ["ab", "ab", "cc"] 的划分是非法的。
+
+
+think: 
+同一个字母的第一次出现的下标位置和最后一次出现的下标位置必须出现在同一个片段
+使用贪心的思想寻找每个片段可能的最小结束下标
+
+Solution:
+
+```py
+class Solution:
+    def partitionLabels(self, s: str) -> List[int]:
+        # 最后一次出现位置
+        last_pos = [0 for _ in range(26)]
+
+        for i,c in enumerate(s):
+            last_pos[ord(c) - ord('a')] = i
+
+        start = 0
+        end = 0
+        partition = []
+        for i,c in enumerate(s):
+            end = max(end, last_pos[ord(c) - ord('a')])
+
+            if i == end:
+                partition.append(end - start + 1)
+                start = end + 1
+        return partition
+```
+
+### 82. 单词拆分
+
+problem: 给你一个字符串 s 和一个字符串列表 wordDict 作为字典。如果可以利用字典中出现的一个或多个单词拼接出 s 则返回 true。
+
+
+think: 
+dp[i] 表示 前 i个字符组成的字符 s[0,...i-1]是否能被拆分成字典中若干出现的单词
+
+dp[i] = dp[j] && check(s[j,..i-1])
+
+Solution:
+
+```py
+class Solution:
+    def wordBreak(self, s: str, wordDict: List[str]) -> bool:
+        
+        n = len(s)
+        dp = [False for _ in range(n+1)]
+        dp[0] = True
+
+        for i in range(1, n+1):
+            for j in range(0, i):
+                if dp[j] and s[j:i] in wordDict:
+                    dp[i] = True
+                    break
+        
+        return dp[n]
+```
+
+### 83. 分割等和子集
+
+problem: 给你一个 只包含正整数 的 非空 数组 nums 。请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。
+
+
+think: 转换成0-1背包问题，选取的数字的和恰好等于整个数组的元素和的一半
+
+dp[i][j] 表示从数组的 [0,i] 下标范围内选取若干个正整数（可以是 0 个），是否存在一种选取方案使得被选取的正整数的和等于 j。
+
+dp[i][0] = True
+j >= nums[i] : dp[i][j] = dp[i−1][j] or dp[i−1][j−nums[i]]
+j < nums[i] : dp[i][j] = dp[i-1][j]
+
+Solution:
+
+```py
+class Solution:
+    def canPartition(self, nums: List[int]) -> bool:
+
+        n = len(nums)
+
+        if n < 2:
+            return False
+        
+        sum_num = sum(nums)
+        max_num = max(nums)
+        target = sum_num // 2
+        if sum_num % 2 != 0 or max_num > target:
+            return False
+        
+        dp = [[False] * (target + 1) for _ in range(n)]
+        for i in range(n):
+            dp[i][0] = True
+        dp[0][nums[0]] = True
+        for i in range(1, n):
+            for j in range(1, target + 1):
+                if j >= nums[i]:
+                    dp[i][j] = dp[i-1][j] or dp[i-1][j-nums[i]]
+                else:
+                    dp[i][j] = dp[i-1][j]
+
+        return dp[n-1][target]
+```
+
+### 84. 
+
+problem: 
+
+
+think: 
+
+
+Solution:
+
+```py
+
+```
