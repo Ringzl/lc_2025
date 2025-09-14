@@ -3233,8 +3233,88 @@ class Solution:
         return dp[n-1][target]
 ```
 
-### 84. 
+### 84. 最长公共子序列
 
+problem: 给定两个字符串 text1 和 text2，返回这两个字符串的最长 公共子序列 的长度。如果不存在 公共子序列 ，返回 0 。
+
+
+think:  
+dp[i][j] 表示 text1[0:i] text2[0:j] 的最长公共子序列长度
+
+text1[i-1] == text2[j-1] : dp[i][j] = dp[i-1][j-1] + 1
+text1[i-1] != text2[j-1] : dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+
+Solution:
+
+```py
+class Solution:
+    def longestCommonSubsequence(self, text1: str, text2: str) -> int:
+        m = len(text1)
+        n = len(text2)
+
+        dp = [[0 for _ in range(n+1)] for _ in range(m+1)]
+
+        for i in range(1, m+1):
+            for j in range(1, n+1):
+                if text1[i-1] == text2[j-1]:
+                    dp[i][j] = dp[i-1][j-1] + 1
+                else:
+                    dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+
+        return dp[m][n]
+```
+
+### 85. 编辑距离
+problem: 给你两个单词 word1 和 word2， 请返回将 word1 转换成 word2 所使用的最少操作数  。你可以对一个单词进行如下三种操作：
+插入一个字符
+删除一个字符
+替换一个字符
+
+
+think: 
+
+dp[i][j] 表示 A 前i个字母和B前j个字母之间的编辑距离
+
+dp[i][j-1] + 1
+
+dp[i-1][j] + 1
+
+相同： dp[i-1][j-1]
+不同： dp[i-1][j-1] + 1
+
+
+Solution:
+
+```py
+class Solution:
+    def minDistance(self, word1: str, word2: str) -> int:
+        m, n = len(word1), len(word2)
+
+        if m * n == 0:
+            return m + n
+        
+        dp = [[0 for _ in range(n+1)] for _ in range(m+1)]
+
+        # 边界
+        for i in range(m+1):
+            dp[i][0] = i
+        for j in range(n+1):
+            dp[0][j] = j
+        
+
+        for i in range(1, m+1):
+            for j in range(1, n+1):
+                s1 = dp[i-1][j] + 1
+                s2 = dp[i][j-1] + 1
+                s3 = dp[i-1][j-1]
+                if word1[i-1] != word2[j-1]:
+                    s3 += 1
+                dp[i][j] = min(s1, s2, s3)
+
+        return dp[m][n]
+```
+
+### 86. 颜色分类
 problem: 
 
 
