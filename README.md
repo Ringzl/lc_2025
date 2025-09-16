@@ -3315,14 +3315,93 @@ class Solution:
 ```
 
 ### 86. 颜色分类
-problem: 
+problem: 给定一个包含红色、白色和蓝色、共 n 个元素的数组 nums ，原地 对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。
 
 
 think: 
+1. 统计出现次数，然后放入数组
+2. 使用三个idx, 遍历数组：
+若为0, idx_0, idx_1, idx_2 加1
+若为1, idx_1, idx_2 加1
+若为2, idx_2 加1
+
+Solution:
+
+```py
+class Solution:
+    def sortColors(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        # color_cnt = dict()
+        # for c in nums:
+        #     color_cnt[c] = color_cnt.get(c, 0) + 1
+        
+        # start = 0
+        # for i in [0,1,2]:
+        #     if i not in color_cnt:
+        #         continue
+        #     nums[start: start+color_cnt[i]] = [i] * color_cnt[i]
+        #     start = start+color_cnt[i]
+        idx0, idx1, idx2 = 0, 0, 0
+        for n in nums:
+
+            if n == 0:
+                nums[idx2] = 2
+                idx2 += 1
+                nums[idx1] = 1
+                idx1 += 1
+                nums[idx0] = 0
+                idx0 += 1
+                
+            elif n == 1:
+                nums[idx2] = 2
+                idx2 += 1
+                nums[idx1] = 1
+                idx1 += 1
+            else:
+                nums[idx2] = 2
+                idx2 += 1
+        return nums
+```
+
+### 87. 下一个排列
+problem: 整数数组的一个 排列  就是将其所有成员以序列或线性顺序排列。
+例如，arr = [1,2,3] ，以下这些都可以视作 arr 的排列：[1,2,3]、[1,3,2]、[3,1,2]、[2,3,1] 。
+整数数组的 下一个排列 是指其整数的下一个字典序更大的排列
+
+think: 
+需要将一个左边的「较小数」与一个右边的「较大数」交换，以能够让当前排列变大
+这个「较小数」尽量靠右，而「较大数」尽可能小
+当交换完成后，「较大数」右边的数需要按照升序重新排列
 
 
 Solution:
 
 ```py
+class Solution:
+    def nextPermutation(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+
+        # 从后向前查找第一个顺序对 
+        i = len(nums) - 2
+        while i >=0  and nums[i] >= nums[i+1]:
+            i -= 1
+        
+        # 从后向前查找第一个元素 j 满足 a[i] < a[j], 交换 a[i] 与 a[j]
+        if i >= 0:
+            j = len(nums) - 1
+            while j >= 0 and nums[i] >= nums[j]:
+                j -= 1
+            nums[i], nums[j] = nums[j], nums[i]
+
+        # 区间 [i+1,n) 必为降序, 使用双指针反转区间 [i+1,n) 使其变为升序
+        left, right = i+1, len(nums) - 1
+        while left < right:
+            nums[left], nums[right] = nums[right], nums[left]
+            left += 1
+            right -= 1 
 
 ```
