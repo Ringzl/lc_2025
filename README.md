@@ -3405,3 +3405,22 @@ class Solution:
             right -= 1 
 
 ```
+
+### 88. 寻找重复数
+
+problem: 给定一个包含 n + 1 个整数的数组 nums ，其数字都在 [1, n] 范围内（包括 1 和 n），可知至少存在一个重复的整数。
+
+think: 
+
+Solution:
+
+```py
+class Solution:
+    def findDuplicate(self, nums: List[int]) -> int:
+
+        num_cnt = {}
+        for n in nums:
+            num_cnt[n] = num_cnt.get(n, 0) + 1
+            if num_cnt[n] > 1:
+                return n
+```
