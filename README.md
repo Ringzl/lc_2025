@@ -3424,3 +3424,39 @@ class Solution:
             if num_cnt[n] > 1:
                 return n
 ```
+
+### 89. 接雨水
+
+problem: 给定 n 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
+
+think: 
+维护一个单调栈，存储下标。
+从左到右遍历数组，若比栈顶小，直接入栈;
+否则 mid = st.pop() 中间出栈， st[-1] 为左边， i为右边
+h = min(左边, 右边) - 中间
+w = i - st[-1] - 1
+s = w * h
+
+Solution:
+
+```py
+class Solution:
+    def trap(self, height: List[int]) -> int:
+        n = len(height)
+
+        res = 0
+        st = []
+        st.append(0)
+
+        for i in range(1, n):
+            while(len(st) > 0 and height[i] > height[st[-1]]):
+                mid = st.pop()
+                if len(st) > 0:
+                    h = min(height[st[-1]], height[i]) - height[mid]
+                    w = i - st[-1] -1
+                    res += h * w
+            st.append(i)
+        
+        return res
+```
+
