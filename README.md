@@ -3486,3 +3486,50 @@ class Solution:
 
         return ans
 ```
+
+### 91. 最小覆盖子串
+
+problem: 给你一个字符串 s 、一个字符串 t 。返回 s 中涵盖 t 所有字符的最小子串。如果 s 中不存在涵盖 t 所有字符的子串，则返回空字符串 "" 。
+
+think: 
+返回字符串 s 中包含字符串 t 的全部字符的最小窗口
+双指针，在 s 上滑动窗口，通过移动 r 指针不断扩张窗口，当窗口包含 t 全部所需的字符后，如果能收缩，我们就收缩窗口直到得到最小窗口。
+
+
+Solution:
+
+```py
+class Solution:
+    def minWindow(self, s: str, t: str) -> str:
+
+
+        need = {}
+        for c in t:
+            need[c] = need.get(c, 0) + 1
+
+        
+        missing = len(t)
+        start = 0 
+        sub_len = len(s) + 1
+        l = 0 # 窗口左端
+
+        for r in range(len(s)):
+            c = s[r]
+            need[c] = need.get(c, 0)
+            if need[c] > 0:
+                missing -= 1
+            need[c] -= 1
+
+            if not missing:
+                while need[s[l]] < 0: # 当前窗口左端字符冗余
+                    need[s[l]] += 1
+                    l += 1
+
+                if r - l + 1 < sub_len:
+                    sub_len = r - l + 1
+                    start = l
+        
+        return "" if sub_len == len(s) + 1 else s[start:start+sub_len]
+
+```
+
