@@ -3533,3 +3533,36 @@ class Solution:
 
 ```
 
+### 92. 缺失的第一个正数
+
+problem: 给你一个未排序的整数数组 nums ，请你找出其中没有出现的最小的正整数。
+
+think: 
+对于一个长度为 N 的数组，其中没有出现的最小正整数只能在 [1,N+1] 中
+
+1. 将数组中所有小于等于 0 的数修改为 N+1
+2. 遍历数组中的每一个数 x, 可能已经被打了标记,给数组中的第 ∣x∣−1 个位置的数添加一个负号
+3. 在遍历完成之后，如果数组中的每一个数都是负数，那么答案是 N+1，否则答案是第一个正数的位置加 1。
+
+Solution:
+
+```py
+class Solution:
+    def firstMissingPositive(self, nums: List[int]) -> int:
+        n = len(nums)
+
+        for i in range(n):
+            if nums[i] <= 0:
+                nums[i] = n + 1
+        
+        for i in range(n):
+            num = abs(nums[i])
+            if num <= n:
+                nums[num-1] = - abs(nums[num-1])
+            
+        for i in range(n):
+            if nums[i] > 0:
+                return i+1
+
+        return n + 1
+```
