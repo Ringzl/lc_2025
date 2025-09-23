@@ -3566,3 +3566,143 @@ class Solution:
 
         return n + 1
 ```
+
+### 93. K 个一组翻转链表
+
+problem: 给你链表的头节点 head ，每 k 个节点一组进行翻转，请你返回修改后的链表。k 是一个正整数，它的值小于或等于链表的长度。如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。
+
+think: 
+模拟, k个一组
+翻转函数： prev, p 先保存 nxt=p.next, p.next = prev, prev = p, p = nxt
+
+拼接： 
+tail = prev
+nxt = tail.next
+head, tail = reverse(head, tail)
+prev.next = head
+tail.next = nxt
+prev = tail
+head = tail.next
+
+Solution:
+
+```py
+class Solution:
+    def reverseKGroup(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
+        def reverse(head, tail):
+            prev = tail.next
+            p = head
+
+            while prev != tail:
+                nxt = p.next
+                p.next = prev
+                prev = p
+                p = nxt
+            
+            return tail, head
+
+        
+        dummy = ListNode(0)
+        dummy.next = head
+        prev = dummy
+
+        while head:
+            tail = prev
+
+            # k个一组
+            for i in range(k):
+                tail = tail.next
+                if not tail:
+                    return dummy.next
+            
+            nxt = tail.next
+            
+            head, tail = reverse(head, tail)
+
+            # 子链表放回原链表
+            prev.next = head
+            tail.next = nxt
+            prev = tail
+            head = tail.next
+
+        return dummy.next
+```
+
+### 94. 合并 K 个升序链表
+
+problem: 给你一个链表数组，每个链表都已经按升序排列。请你将所有链表合并到一个升序链表中，返回合并后的链表。
+
+think: 
+mege两个有序链表： while ap and bp: tail.next = min(ap, bp)
+二分
+
+Solution:
+
+```py
+
+class Solution:
+    def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
+
+        def mergetwolist(a, b):
+            if not a or not b:
+                return a if a else b
+            
+            head = ListNode(0)
+            tail = head
+            ap = a
+            bp = b
+
+            while ap and bp:
+                if ap.val < bp.val:
+                    tail.next = ap
+                    ap = ap.next
+                else:
+                    tail.next = bp
+                    bp = bp.next
+                tail = tail.next
+            tail.next = ap if ap else bp
+            return head.next
+        
+        def merge(lsts, l, r):
+            if l == r:
+                return lsts[l]
+            if l > r:
+                return None
+            
+            mid = (l+r) // 2
+            return mergetwolist(merge(lsts, l, mid), merge(lsts, mid+1, r))
+        
+        return merge(lists, 0, len(lists) - 1)
+```
+
+### 95. 二叉树中的最大路径和
+
+problem: 二叉树中的 路径 被定义为一条节点序列，序列中每对相邻节点之间都存在一条边。同一个节点在一条路径序列中 至多出现一次 。该路径 至少包含一个 节点，且不一定经过根节点。给你一个二叉树的根节点 root ，返回其 最大路径和 。
+
+
+think: 
+递归求最大左右子树最大路径和（包含 root）
+ans = max(ans, left + right - root.val)
+
+Solution:
+
+```py
+class Solution:
+    def maxPathSum(self, root: Optional[TreeNode]) -> int:
+        
+        ans = -float('inf')
+        def dfs(root): #子树最大路径和
+            nonlocal ans
+            if root == None:
+                return 0
+
+            left = max(root.val, dfs(root.left) + root.val)
+            right = max(root.val, dfs(root.right) + root.val)
+
+            ans = max(ans, left + right - root.val)
+
+            return max(left, right)
+        
+        dfs(root)
+        return ans
+```
