@@ -3706,3 +3706,59 @@ class Solution:
         dfs(root)
         return ans
 ```
+
+### 96. N 皇后
+
+problem: 皇后可以攻击与之处在同一行或同一列或同一斜线上的棋子。n 皇后问题 研究的是如何将 n 个皇后放置在 n×n 的棋盘上，并且使皇后彼此之间不能相互攻击。给你一个整数 n ，返回所有不同的 n 皇后问题 的解决方案。每一种解法包含一个不同的 n 皇后问题 的棋子放置方案，该方案中 'Q' 和 '.' 分别代表了皇后和空位。
+
+think: 
+不同行，不同列：每一行放置一个（不同行），
+
+行作为索引，回溯遍历列
+
+Solution:
+
+```py
+class Solution:
+    def solveNQueens(self, n: int) -> List[List[str]]:
+        ans = []
+
+        cb = ['.'*n for _ in range(n)]
+
+        # 回溯
+        def backtrack(n, row, cb):
+            if row == n:
+                ans.append(cb.copy())
+                return
+
+            
+            for col in range(n):
+                if isValid(row, col, cb, n):
+                    cb[row] = cb[row][:col] + 'Q' + cb[row][col+1:]
+                    backtrack(n, row+1, cb)
+                    cb[row] = cb[row][:col] + '.' + cb[row][col+1:]
+        
+        # 判断棋盘合法： 在row，col位置放置是否合法
+        def isValid(row, col, cb, n):
+
+            # 不同列
+            for i in range(row):
+                if cb[i][col] == 'Q':
+                    return False
+
+            # 对角线（45）
+            for i, j in zip(range(row-1, -1, -1), range(col+1, n)):
+                if cb[i][j] == 'Q':
+                    return False
+
+            # 对角线（135）
+            for i, j in zip(range(row-1, -1, -1), range(col-1, -1, -1)):
+                if cb[i][j] == 'Q':
+                    return False
+            
+            return True
+        
+        backtrack(n, 0, cb)
+
+        return ans
+```
