@@ -3832,31 +3832,67 @@ class Solution:
 
 problem: 中位数是有序整数列表中的中间值。如果列表的大小是偶数，则没有中间值，中位数是两个中间值的平均值。
 
-think: 
+void addNum(int num) 将数据流中的整数 num 添加到数据结构中。
+double findMedian() 返回到目前为止所有元素的中位数。与实际答案相差 10-5 以内的答案将被接受。
+
+
+think: 优先队列，大小堆维护中位数
+
+Solution:
+
+```py
+class MedianFinder:
+
+    def __init__(self):
+        self.min_heap = []
+        self.max_heap = []
+        
+
+    def addNum(self, num: int) -> None:
+        if not self.min_heap or num <= -self.min_heap[0]:
+            heapq.heappush(self.min_heap, -num)
+
+            if len(self.max_heap) + 1 < len(self.min_heap):
+                heapq.heappush(self.max_heap, -heapq.heappop(self.min_heap))
+        else:
+            heapq.heappush(self.max_heap, num)
+            if len(self.max_heap) > len(self.min_heap):
+                heapq.heappush(self.min_heap, -heapq.heappop(self.max_heap))
+        
+
+    def findMedian(self) -> float:
+        if len(self.min_heap) > len(self.max_heap):
+            return -self.min_heap[0]
+        
+        return (-self.min_heap[0] + self.max_heap[0]) / 2
+```
+
+### 99. 柱状图中最大的矩形
+
+problem: 给定 n 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1 。求在该柱状图中，能够勾勒出来的矩形的最大面积。
+
+think: 遍历左右边界，最小高度，更新最大面积
 
 
 Solution:
 
 ```py
+class Solution:
+    def largestRectangleArea(self, heights: List[int]) -> int:
+        n = len(heights)
+        ans = 0
+        for i in range(n):
+            h_min = float('inf')
+            for j in range(i,n):
+                h_min = min(h_min, heights[j])
+                ans = max(ans, (j-i+1) * h_min)
+        return ans
 
 ```
 
-### 99. 
+### 100. 最长有效括号
 
-problem: 
-
-think: 
-
-
-Solution:
-
-```py
-
-```
-
-### 100. 
-
-problem: 
+problem: 给你一个只包含 '(' 和 ')' 的字符串，找出最长有效（格式正确且连续）括号 子串 的长度。左右括号匹配，即每个左括号都有对应的右括号将其闭合的字符串是格式正确的，比如 "(()())"。
 
 think: 
 
