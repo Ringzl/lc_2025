@@ -3879,14 +3879,24 @@ Solution:
 ```py
 class Solution:
     def largestRectangleArea(self, heights: List[int]) -> int:
-        n = len(heights)
-        ans = 0
-        for i in range(n):
-            h_min = float('inf')
-            for j in range(i,n):
-                h_min = min(h_min, heights[j])
-                ans = max(ans, (j-i+1) * h_min)
-        return ans
+        # n = len(heights)
+        # ans = 0
+        # for i in range(n):
+        #     h_min = float('inf')
+        #     for j in range(i,n):
+        #         h_min = min(h_min, heights[j])
+        #         ans = max(ans, (j-i+1) * h_min)
+        # return ans
+
+        stack = []
+        heights = [0] + heights + [0]
+        res = 0
+        for i in range(len(heights)):
+            while stack and heights[stack[-1]] > heights[i]:
+                tmp = stack.pop()
+                res = max(res, (i - stack[-1] - 1) * heights[tmp])
+            stack.append(i)
+        return res
 
 ```
 
@@ -3896,9 +3906,40 @@ problem: 给你一个只包含 '(' 和 ')' 的字符串，找出最长有效（�
 
 think: 
 
+dp[i] 表示以下标 i 字符结尾的最长有效括号的长度
+
+从前往后遍历字符串 
+
+1. s[i] == ')' and s[i-1] = '('  => dp[i] = dp[i-2] + 2
+
+2. s[i] == ')' and s[i-1] = ')' 如果 s[i−dp[i−1]−1]=‘(’，那么
+ => dp[i] = dp[i-1] + dp[i-dp[i-1]-2] + 2
+
 
 Solution:
 
 ```py
+
+class Solution:
+    def longestValidParentheses(self, s: str) -> int:
+        ans = 0
+        n = len(s)
+        dp = [0 for _ in range(n)]
+
+        for i in range(1,n):
+            if s[i] == ')':
+                if s[i-1] == '(':
+                    if i >= 2:
+                        dp[i] = dp[i-2] + 2
+                    else:
+                        dp[i] = 2
+                elif i - dp[i - 1] > 0 and s[i - dp[i - 1] - 1] == '(':
+                    if i - dp[i - 1] >= 2:
+                        dp[i] = dp[i - 1] + dp[i - dp[i - 1] - 2] + 2
+                    else:
+                        dp[i] = dp[i - 1] + 2
+                ans = max(ans, dp[i])
+        
+        return ans
 
 ```
